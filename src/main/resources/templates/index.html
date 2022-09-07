@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+    <title>Kovin EATS</title>
+    <link rel="icon" href="img/icon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    rel="stylesheet"
+    />
+    <!-- MDB -->
+    <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.4.0/mdb.min.css"
+    rel="stylesheet"
+    />
+    <!-- MDB -->
+    <head>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.4.0/mdb.min.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+        
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <a class="navbar-brand mt-2 mt-lg-0" href="/">
+                        <img
+                            src="img/logo.png"
+                            height="50"
+                            alt="Kovin Eats Logo"
+                            loading="lazy"
+                        />
+                    </a>
+                </div>
+
+                <div class="input-group d-flex justify-content-center">
+                    <div class="form-outline" style="width:50%;">
+                      <input type="search" id="form1" class="form-control" />
+                      <label class="form-label" for="form1">Buscar Restaurantes | Platillos</label>
+                    </div>
+                    <button type="button" class="btn btn-primary">
+                      <i class="fas fa-search"></i>
+                    </button>
+                </div>
+        
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a
+                          class="text-reset me-3 dropdown-toggle hidden-arrow"
+                          href="#"
+                          id="navbarDropdownMenuLink"
+                          role="button"
+                          data-mdb-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          <i class="fas fa-receipt"></i>
+                          <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                        </a>
+                        <ul
+                          class="dropdown-menu dropdown-menu-end"
+                          aria-labelledby="navbarDropdownMenuLink"
+                        >
+                          <li>
+                            <a class="dropdown-item" href="/pedidos">Ver pedidos</a>
+                          </li>
+                        </ul>
+                      </div>
+                    <div class="dropdown">
+                        <a
+                            class="dropdown-toggle d-flex align-items-center hidden-arrow"
+                            href="#"
+                            id="navbarDropdownMenuAvatar"
+                            role="button"
+                            data-mdb-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            <img
+                            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                            class="rounded-circle"
+                            height="25"
+                            alt="Black and White Portrait of a Man"
+                            loading="lazy"
+                            />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div style="margin-top: 1%;margin-bottom: 1%;margin-left: 1%;margin-right: 1%;;">
+            <h1>Platillos</h1>
+            <hr>
+        </div>
+
+        <div class="card-group">
+            <div class="row row-cols-1 row-cols-md-6 g-4" style="margin-left: 1%;margin-right:1%;">
+                <div th:each="platillo:${platillos}" th:attr="data-id=${platillo.id}" class="col">
+                    <div class="card h-100 bg-image hover-zoom" >
+                        <div class="card-header" style="padding: 0;" >
+                            <!-- <span th:if="${platillo.id==3}" class="badge bg-primary" style="border-radius: 0;width: 100%;height:fit-content;">Favoritos</span>
+                            <span th:if="${platillo.id==5}" class="badge bg-primary" style="border-radius: 0;width: 100%;">Favoritos</span> -->
+                            <img class="card-img-top" th:src="${platillo.logo_url}" alt="platillo"> 
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${platillo.nombre}" style="text-align:center;text-transform: uppercase;"></h5>
+                            <i class="fas fa-utensils"></i><p class="card-text" th:text="${platillo.descripcion}"></p>
+                            <i class="fas fa-dollar-sign"></i><p class="card-text" th:text="${platillo.precio}"></p>
+                        </div>
+                        <div class="card-footer text-center mt-auto">
+                            <button type="button" class="btn btn-primary btn-floating" th:id="'btnAgregarPlatillo'+${platillo.id}" th:onclick="|cargarModal(${platillo.id})|">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" th:id="'modalIngredientes'+${platillo.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Seleccione los ingredientes</h5>
+                                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/crearPedido" method="post">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="text-center">
+                                                        <h3 th:text="${platillo.nombre}" style="text-transform:uppercase;"></h3>
+                                                        <p th:text="${platillo.descripcion}"></p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-8 col-sm-6">
+                                                            <img th:src="${platillo.logo_url}" class="img-thumbnail" th:alt="${platillo.nombre}" />
+                                                        </div>
+                                                        <div class="col-4 col-sm-6">
+                                                            <div>
+                                                                <input type="hidden" name="total" th:value="${platillo.precio}">
+                                                                <input type="hidden" name="metodo_pago" value="Efectivo">
+                                                                <input type="hidden" name="fecha_pedido" th:value="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}">
+                                                                <input type="hidden" name="platillos" th:value="${platillo.id}">
+                                                            </div>
+                                                            <div class="form-check" th:each="ingrediente:${platillo.ingredientes}">
+                                                                <input class="form-check-input" name="ingredientes" id="ingredientes" type="checkbox" th:value="${ingrediente.nombre}" th:id="${ingrediente.id}"/>
+                                                                <label class="form-check-label" for="flexCheckDefault" th:text="${ingrediente.nombre}"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="row">
+                                                        <div class="d-flex justify-content-end">
+                                                            <h3>Total: $</h3>
+                                                            <h3 th:text="${platillo.precio}"></h3>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <hr>
+                                                        <button type="submit" class="btn btn-primary">Ordenar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <p class="d-flex justify-content-center">Por el momento solo se aceptan pagos en efectivo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div style="margin-top: 1%;margin-bottom: 1%;margin-left: 1%;margin-right: 1%;;">
+            <h1>Restaurantes</h1>
+            <hr>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4" style="margin-left: 1%;margin-right:1%;">
+            <div th:each="restaurante:${restaurantes}" class="col">
+                <a href="" style="text-decoration:none;color: rgb(79, 79, 79);">
+                    <div class="card h-100 bg-image hover-zoom">
+                        <img class="card-img-top" th:src="${restaurante.logo_url}" alt="restaurante"> </img>
+                        <span class="badge bg-primary" style="border-radius: 0;">Nuevo en Kovin EATS</span>
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${restaurante.nombre}" style="text-align:center;text-transform: uppercase;"></h5>
+                            <i class="fas fa-map-marked-alt"></i><p th:text="${restaurante.direccion}"></p>
+                            <i class="fas fa-clock"></i><p th:text="${restaurante.horario}"></p>
+                            <i class="fas fa-phone"></i><p th:text="${restaurante.telefono}"></p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <br>
+
+        <footer class="bg-light text-center text-lg-start">
+            <!-- Copyright -->
+            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                <p style="color:black;display: inline;">
+                    © 2022 Copyright Kovin
+                    <p style="color: #1266f1;display:inline">EATS.</p>
+                    <p>Made by Kevin Moreno Parra for Dagoberto's class.</p>
+                </p> 
+            </div>
+            <!-- Copyright -->
+        </footer> 
+
+        <script type="text/javascript">
+            function cargarModal(id, ingredientes) {
+                const modalId = "modalIngredientes" + id;
+                const myModalEl = document.getElementById(modalId)
+                const modal = new mdb.Modal(myModalEl)
+                modal.show()
+            }
+        </script>
+
+    </body>
+
+</html>
